@@ -11,7 +11,7 @@ class EverArt {
 
   protected get defaultHeaders() {
     return {
-      'Authorization': `Bearer ${this.apiKey}`,
+      Authorization: `Bearer ${this.apiKey}`,
       'Content-Type': 'application/json',
     };
   }
@@ -37,7 +37,7 @@ class EverArt {
           ...args: V1Predictions.FetchOptions
         ): Promise<V1Predictions.FetchResponse> =>
           V1Predictions.fetchWithPolling.bind(this)(...args),
-      }
+      },
     };
   }
 }

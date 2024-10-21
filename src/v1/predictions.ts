@@ -1,32 +1,32 @@
 import axios from 'axios';
-import {
-  APIVersion,
-  EverArtError,
-} from '../util';
+import { APIVersion, EverArtError } from '../util';
 import * as Util from '../util';
 import EverArt from '..';
 
 enum Endpoint {
   CREATE = 'models/:id/predictions',
-  FETCH = 'predictions/:id'
+  FETCH = 'predictions/:id',
 }
 
-type PredictionStatus = 'STARTING' | 'PROCESSING' | 'SUCCEEDED' | 'FAILED' | 'CANCELED';
+type PredictionStatus =
+  | 'STARTING'
+  | 'PROCESSING'
+  | 'SUCCEEDED'
+  | 'FAILED'
+  | 'CANCELED';
 type PredictionType = 'txt2img' | 'img2img';
 
 type Prediction = {
-  id: string,
-  model_id: string
-  status: PredictionStatus
-  image_url: string | null
-  type: PredictionType
-}
+  id: string;
+  model_id: string;
+  status: PredictionStatus;
+  image_url: string | null;
+  type: PredictionType;
+};
 
 export type FetchResponse = Prediction;
 
-export type FetchOptions = [
-  id: string
-];
+export type FetchOptions = [id: string];
 
 /**
  * EverArt Fetch Prediction (v1/predictions/:id)
@@ -39,18 +39,12 @@ export async function fetch(
 
   const endpoint = Endpoint.FETCH.replace(':id', id);
 
-  const response = await axios.get(
-    Util.makeUrl(APIVersion.V1, endpoint),
-    {
-      headers: this.defaultHeaders,
-      validateStatus: undefined
-    },
-  );
+  const response = await axios.get(Util.makeUrl(APIVersion.V1, endpoint), {
+    headers: this.defaultHeaders,
+    validateStatus: undefined,
+  });
 
-  if (
-    response.status === 200 &&
-    response.data.prediction
-  ) {
+  if (response.status === 200 && response.data.prediction) {
     return response.data.prediction;
   }
 
@@ -72,7 +66,10 @@ export async function fetchWithPolling(
 
   let prediction = await this.v1.predictions.fetch(id);
 
-  while (prediction.status === 'STARTING' || prediction.status === 'PROCESSING') {
+  while (
+    prediction.status === 'STARTING' ||
+    prediction.status === 'PROCESSING'
+  ) {
     await Util.sleep(1000);
     prediction = await this.v1.predictions.fetch(id);
   }
@@ -83,7 +80,7 @@ export async function fetchWithPolling(
 export type V1CreateRequiredParams = [
   modelId: string,
   prompt: string,
-  type: PredictionType
+  type: PredictionType,
 ];
 
 export type V1CreateOptionalParams = {
@@ -98,7 +95,7 @@ export type CreateOptions = [
   options?: V1CreateOptionalParams,
 ];
 
-export type CreateResponse = Prediction[]
+export type CreateResponse = Prediction[];
 
 /**
  * EverArt Create Predictions (v1/models/:id/predictions)
@@ -115,7 +112,7 @@ export async function create(
 
   const body: any = {
     prompt,
-    type
+    type,
   };
 
   if (options?.image) body.image = options.image;
@@ -130,7 +127,7 @@ export async function create(
     body,
     {
       headers: this.defaultHeaders,
-      validateStatus: undefined
+      validateStatus: undefined,
     },
   );
 

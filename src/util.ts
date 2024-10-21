@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 const EVERART_BASE_URL = 'https://api.everart.ai';
 
 export enum APIVersion {
-  V1 = 'v1'
+  V1 = 'v1',
 }
 
 // TYPE DEFINTIONS
@@ -32,10 +32,7 @@ export type EverArtStatusResult = {
 
 // HELPER FUNCTIONS
 
-export function makeUrl(
-  verison: APIVersion,
-  endpoint: string,
-) {
+export function makeUrl(verison: APIVersion, endpoint: string) {
   return `${EVERART_BASE_URL}/${verison}/${endpoint}`;
 }
 
@@ -48,7 +45,7 @@ export function makeUrl(
 export async function downloadImage(url: string) {
   let ext = url.split('.').pop() || 'png';
   if (!['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
-    ext = 'png'
+    ext = 'png';
   }
   const filename = `image-${uuidv4()}.${ext}`;
   const filepath = path.join(os.tmpdir(), filename);

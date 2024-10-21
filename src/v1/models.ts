@@ -7,15 +7,15 @@ enum Endpoint {
   FETCH = 'models',
 }
 
-type ModelStatus = 'pending' | 'processing' | 'training' | 'ready' | 'failed'
+type ModelStatus = 'pending' | 'processing' | 'training' | 'ready' | 'failed';
 
 type Model = {
-  id: string,
-  name: string
-  status: ModelStatus
-}
+  id: string;
+  name: string;
+  status: ModelStatus;
+};
 
-export type FetchResponse = { models: Model[], hasMore: boolean };
+export type FetchResponse = { models: Model[]; hasMore: boolean };
 
 export type FetchOptions = [
   options?: {
@@ -35,32 +35,30 @@ export async function fetch(
 ): Promise<FetchResponse> {
   const [options] = args;
 
-  const params: string[] = []
+  const params: string[] = [];
 
   if (options) {
     if (options.beforeId) {
-      params.push(`before_id=${encodeURIComponent(options.beforeId)}`)
+      params.push(`before_id=${encodeURIComponent(options.beforeId)}`);
     }
     if (options.limit) {
-      params.push(`limit=${options.limit}`)
+      params.push(`limit=${options.limit}`);
     }
     if (options.search) {
-      params.push(`search=${encodeURIComponent(options.search)}`)
+      params.push(`search=${encodeURIComponent(options.search)}`);
     }
     if (options.status) {
-      params.push(`status=${encodeURIComponent(options.status)}`)
+      params.push(`status=${encodeURIComponent(options.status)}`);
     }
   }
 
-  const endpoint = Endpoint.FETCH + (params.length > 0 ? `?${params.join('&')}` : '')
+  const endpoint =
+    Endpoint.FETCH + (params.length > 0 ? `?${params.join('&')}` : '');
 
-  const response = await axios.get(
-    Util.makeUrl(APIVersion.V1, endpoint),
-    {
-      headers: this.defaultHeaders,
-      validateStatus: undefined
-    },
-  );
+  const response = await axios.get(Util.makeUrl(APIVersion.V1, endpoint), {
+    headers: this.defaultHeaders,
+    validateStatus: undefined,
+  });
 
   if (
     response.status === 200 &&
@@ -70,7 +68,7 @@ export async function fetch(
     return {
       models: response.data.models,
       hasMore: response.data.has_more,
-    }
+    };
   }
 
   throw new EverArtError(
