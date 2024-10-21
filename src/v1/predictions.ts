@@ -11,8 +11,8 @@ enum Endpoint {
   FETCH = 'predictions/:id'
 }
 
-type PredictionStatus = 'starting' | 'processing' | 'succeeded' | 'failed' | 'canceled';
-type PredictionType = 'txt2img';
+type PredictionStatus = 'STARTING' | 'PROCESSING' | 'SUCCEEDED' | 'FAILED' | 'CANCELED';
+type PredictionType = 'txt2img' | 'img2img';
 
 type Prediction = {
   id: string,
@@ -72,7 +72,7 @@ export async function fetchWithPolling(
 
   let prediction = await this.v1.predictions.fetch(id);
 
-  while (prediction.status === 'starting' || prediction.status === 'processing') {
+  while (prediction.status === 'STARTING' || prediction.status === 'PROCESSING') {
     await Util.sleep(1000);
     prediction = await this.v1.predictions.fetch(id);
   }
@@ -87,6 +87,7 @@ export type V1CreateRequiredParams = [
 ];
 
 export type V1CreateOptionalParams = {
+  image?: string;
   imageCount?: number;
   height?: number;
   width?: number;
@@ -117,6 +118,7 @@ export async function create(
     type
   };
 
+  if (options?.image) body.image = options.image;
   if (options?.height) body.height = options.height;
   if (options?.width) body.width = options.width;
   if (options?.imageCount) body.image_count = options.imageCount;

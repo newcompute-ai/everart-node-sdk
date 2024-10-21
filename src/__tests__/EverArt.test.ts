@@ -32,7 +32,7 @@ test('Fetch models - (v1/models)', async () => {
 
 // v1/models/:id/predictions
 
-test('Create predictions - (v1/models/:id/predictions)', async () => {
+test('Create txt2img predictions - (v1/models/:id/predictions)', async () => {
   if (!everart) throw new Error('EverArt instance not found');
   
   const { models } = await everart.v1.models.fetch({ limit: 1 }); 
@@ -42,6 +42,26 @@ test('Create predictions - (v1/models/:id/predictions)', async () => {
     `${models[0].name} test`, 
     'txt2img',
     { 
+      imageCount: 1 
+    }
+  );
+
+  console.log('Predictions:', predictions);
+
+  expect(Array.isArray(predictions)).toBe(true);
+});
+
+test('Create img2img predictions - (v1/models/:id/predictions)', async () => {
+  if (!everart) throw new Error('EverArt instance not found');
+  
+  const { models } = await everart.v1.models.fetch({ limit: 1 }); 
+  if (!models.length) throw new Error('No models found');
+  const predictions = await everart.v1.predictions.create(
+    models[0].id, 
+    `${models[0].name} test`, 
+    'img2img',
+    { 
+      image: 'https://storage.googleapis.com/storage.catbird.ai/training/model/1000/data/predictions/169147014733500416/v2beta_stable_image_generate_ultra_e660909f-71a0-4bb2-8113-fadb42f3e98f.png',
       imageCount: 1 
     }
   );
@@ -94,5 +114,41 @@ test('Fetch prediction with polling -  (v1/predictions/:id)', async () => {
 
   expect(prediction).toHaveProperty('id');
   expect(prediction).toHaveProperty('status');
-  expect(prediction.status).toBe('succeeded');
+  expect(prediction.status).toBe('SUCCEEDED');
 }, 120000);
+
+test('Fetch 50 predictions with polling in parallel -  (v1/predictions/:id)', async () => {
+    if (!everart) throw new Error('EverArt instance not found');
+    
+    const { models } = await everart.v1.models.fetch({ limit: 1 }); 
+    if (!models.length) throw new Error('No models found');
+  
+    const createPredictions = async () => {
+      const predictions = await everart!.v1.predictions.create(
+        models[0].id, 
+        `${models[0].name} test`,
+        'txt2img',
+        { 
+          imageCount: 1 
+        }
+      );
+      if (!predictions.length) throw new Error('No predictions created');
+      return predictions[0].id;
+    };
+  
+    // Create 50 predictions
+    const predictionIds = await Promise.all(Array(50).fill(null).map(createPredictions));
+  
+    // Fetch all predictions with polling in parallel
+    const predictions = await Promise.all(
+      predictionIds.map(id => everart!.v1.predictions.fetchWithPolling(id))
+    );
+  
+    console.log('Predictions:', predictions);
+  
+    predictions.forEach(prediction => {
+      expect(prediction).toHaveProperty('id');
+      expect(prediction).toHaveProperty('status');
+      expect(prediction.status).toBe('SUCCEEDED');
+    });
+  }, 300000);
