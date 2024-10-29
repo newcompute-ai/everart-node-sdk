@@ -7,7 +7,13 @@ enum Endpoint {
   FETCH = 'models',
 }
 
-type ModelStatus = 'pending' | 'processing' | 'training' | 'ready' | 'failed';
+type ModelStatus =
+  | 'PENDING'
+  | 'PROCESSING'
+  | 'TRAINING'
+  | 'READY'
+  | 'FAILED'
+  | 'CANCELED';
 
 type Model = {
   id: string;
