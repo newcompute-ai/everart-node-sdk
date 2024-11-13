@@ -23,6 +23,14 @@ class EverArt {
           ...args: V1Models.FetchOptions
         ): Promise<V1Models.FetchResponse> =>
           V1Models.fetch.bind(this)(...args),
+        fetchMany: (
+          ...args: V1Models.FetchManyOptions
+        ): Promise<V1Models.FetchManyResponse> =>
+          V1Models.fetchMany.bind(this)(...args),
+        create: (
+          ...args: V1Models.CreateOptions
+        ): Promise<V1Models.CreateResponse> =>
+          V1Models.create.bind(this)(...args),
       },
       predictions: {
         create: (

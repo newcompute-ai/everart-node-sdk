@@ -25,6 +25,8 @@ const everart = new EverArt(process.env.EVERART_API_KEY);
 
 ### Models (v1)
 - [Fetch](#fetch)
+- [Fetch Many](#fetch-many)
+- [Create](#create)
 
 ### Predictions (v1)
 - [Create](#create)
@@ -35,10 +37,34 @@ const everart = new EverArt(process.env.EVERART_API_KEY);
 
 ### Fetch
 ```typescript
-const { models, hasMore } = await everart.v1.models.fetch();
+const model = await everart.v1.models.fetch('1234567890');
+
+console.log('Model:', model);
+```
+
+### Fetch Many
+```typescript
+const { models, hasMore } = await everart.v1.models.fetchMany();
 
 console.log('Models:', models);
 console.log('Has More:', hasMore);
+```
+
+### Create
+```typescript
+const model = await everart.v1.models.create(
+  'My Model',
+  'OBJECT',
+  [
+    'https://image.com/1.jpeg',
+    'https://image.com/2.jpeg',
+    'https://image.com/3.jpeg',
+    'https://image.com/4.jpeg',
+    'https://image.com/5.jpeg'
+  ]
+);
+
+console.log('Model:', model);
 ```
 
 ## Predictions (v1)
