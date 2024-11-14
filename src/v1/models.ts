@@ -17,10 +17,7 @@ type ModelStatus =
   | 'FAILED'
   | 'CANCELED';
 
-type ModelSubject =
-  | 'OBJECT'
-  | 'STYLE'
-  | 'PERSON';
+type ModelSubject = 'OBJECT' | 'STYLE' | 'PERSON';
 
 type Model = {
   id: string;
@@ -126,9 +123,9 @@ export async function fetch(
 export type CreateResponse = Model;
 
 export type CreateOptions = [
-  name: string, 
-  subject: ModelSubject, 
-  imageUrls: string[]
+  name: string,
+  subject: ModelSubject,
+  imageUrls: string[],
 ];
 
 /**
@@ -143,7 +140,7 @@ export async function create(
   const body: any = {
     name,
     subject,
-    image_urls: imageUrls
+    image_urls: imageUrls,
   };
 
   const endpoint = Endpoint.CREATE;

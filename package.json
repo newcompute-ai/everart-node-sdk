@@ -1,6 +1,6 @@
 {
   "name": "everart",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "Node SDK for the EverArt REST API",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
