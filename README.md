@@ -21,6 +21,11 @@ import EverArt from 'everart';
 const everart = new EverArt(process.env.EVERART_API_KEY);
 ```
 
+## How to get a key
+Log in or sign up at [https://www.everart.ai/](https://www.everart.ai/), then navigate to the API section in the sidebar.
+
+
+
 ## Table of Contents
 
 ### Generations (v1)
