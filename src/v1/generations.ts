@@ -4,34 +4,42 @@ import * as Util from '../util';
 import EverArt from '..';
 
 enum Endpoint {
-  CREATE = 'models/:id/predictions',
-  FETCH = 'predictions/:id',
+  CREATE = 'models/:id/generations',
+  FETCH = 'generations/:id',
 }
 
-type PredictionStatus =
+type GenerationStatus =
   | 'STARTING'
   | 'PROCESSING'
   | 'SUCCEEDED'
   | 'FAILED'
   | 'CANCELED';
-type PredictionType = 'txt2img' | 'img2img';
+type GenerationType = 'txt2img' | 'img2img';
 
-type Prediction = {
+type Generation = {
   id: string;
   model_id: string;
-  status: PredictionStatus;
+  status: GenerationStatus;
   image_url: string | null;
-  type: PredictionType;
+  type: GenerationType;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
-export type FetchResponse = Prediction;
+function mapGeneration(generation: any) {
+  return {
+    ...generation,
+    createdAt: new Date(generation.createdAt),
+    updatedAt: new Date(generation.updatedAt)
+  }
+}
+
+export type FetchResponse = Generation;
 
 export type FetchOptions = [id: string];
 
 /**
- * EverArt Fetch Prediction (v1/predictions/:id)
- * 
- * @deprecated Use generations instead. This will be removed in a future version.
+ * EverArt Fetch Generation (v1/generations/:id)
  */
 export async function fetch(
   this: EverArt,
@@ -46,21 +54,19 @@ export async function fetch(
     validateStatus: undefined,
   });
 
-  if (response.status === 200 && response.data.prediction) {
-    return response.data.prediction;
+  if (response.status === 200 && response.data.generation) {
+    return mapGeneration(response.data.generation);
   }
 
   throw new EverArtError(
     response.status,
-    'Failed to fetch prediction',
+    'Failed to fetch generation',
     response.data,
   );
 }
 
 /**
- * EverArt Fetch Prediction w/ polling (v1/predictions/:id)
- * 
- * @deprecated Use generations instead. This will be removed in a future version.
+ * EverArt Fetch Generation w/ polling (v1/generations/:id)
  */
 export async function fetchWithPolling(
   this: EverArt,
@@ -68,23 +74,23 @@ export async function fetchWithPolling(
 ): Promise<FetchResponse> {
   const [id] = args;
 
-  let prediction = await this.v1.predictions.fetch(id);
+  let generation = await this.v1.generations.fetch(id);
 
   while (
-    prediction.status === 'STARTING' ||
-    prediction.status === 'PROCESSING'
+    generation.status === 'STARTING' ||
+    generation.status === 'PROCESSING'
   ) {
     await Util.sleep(1000);
-    prediction = await this.v1.predictions.fetch(id);
+    generation = await this.v1.generations.fetch(id);
   }
 
-  return prediction;
+  return generation;
 }
 
 export type V1CreateRequiredParams = [
   modelId: string,
   prompt: string,
-  type: PredictionType,
+  type: GenerationType,
 ];
 
 export type V1CreateOptionalParams = {
@@ -99,16 +105,14 @@ export type CreateOptions = [
   options?: V1CreateOptionalParams,
 ];
 
-export type CreateResponse = Prediction[];
+export type CreateResponse = Generation[];
 
 /**
- * EverArt Create Predictions (v1/models/:id/predictions)
- * 
- * @deprecated Use generations instead. This will be removed in a future version.
+ * EverArt Create Generations (v1/models/:id/generations)
  *
- * @param modelId - The model ID to use for the prediction
- * @param prompt - The prompt to use for the prediction
- * @param options - Additional options for the predictions
+ * @param modelId - The model ID to use for the generation
+ * @param prompt - The prompt to use for the generation
+ * @param options - Additional options for the generation
  */
 export async function create(
   this: EverArt,
@@ -137,13 +141,13 @@ export async function create(
     },
   );
 
-  if (response.status === 200 && Array.isArray(response.data.predictions)) {
-    return response.data.predictions;
+  if (response.status === 200 && Array.isArray(response.data.generations)) {
+    return response.data.generations.map(mapGeneration);
   }
 
   throw new EverArtError(
     response.status,
-    'Failed to create predictions',
+    'Failed to create generations',
     response.data,
   );
 }

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import * as V1Generations from './v1/generations';
 import * as V1Models from './v1/models';
 import * as V1Predictions from './v1/predictions';
 
@@ -18,6 +19,20 @@ class EverArt {
 
   public get v1() {
     return {
+      generations: {
+        create: (
+          ...args: V1Generations.CreateOptions
+        ): Promise<V1Generations.CreateResponse> =>
+          V1Generations.create.bind(this)(...args),
+        fetch: (
+          ...args: V1Generations.FetchOptions
+        ): Promise<V1Generations.FetchResponse> =>
+          V1Generations.fetch.bind(this)(...args),
+        fetchWithPolling: (
+          ...args: V1Generations.FetchOptions
+        ): Promise<V1Generations.FetchResponse> =>
+          V1Generations.fetchWithPolling.bind(this)(...args),
+      },
       models: {
         fetch: (
           ...args: V1Models.FetchOptions
@@ -32,6 +47,9 @@ class EverArt {
         ): Promise<V1Models.CreateResponse> =>
           V1Models.create.bind(this)(...args),
       },
+      /**
+       * @deprecated Use generations instead. This will be removed in a future version.
+       */
       predictions: {
         create: (
           ...args: V1Predictions.CreateOptions

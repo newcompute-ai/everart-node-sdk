@@ -23,15 +23,72 @@ const everart = new EverArt(process.env.EVERART_API_KEY);
 
 ## Table of Contents
 
+### Generations (v1)
+- [Create](#create)
+- [Fetch](#fetch)
+- [Fetch w/ Polling](#fetch-with-polling)
+
 ### Models (v1)
 - [Fetch](#fetch)
 - [Fetch Many](#fetch-many)
 - [Create](#create)
 
-### Predictions (v1)
-- [Create](#create)
-- [Fetch](#fetch)
-- [Fetch w/ Polling](#fetch-with-polling)
+## Generations (v1)
+
+### Create
+
+```typescript
+const { models } = await everart.v1.models.fetch({ limit: 1 }); 
+if (!models.length) throw new Error('No models found');
+const generations = await everart.v1.generations.create(
+  models[0].id, 
+  `${models[0].name} test`, 
+  'txt2img',
+  { 
+    imageCount: 1 
+  }
+);
+
+console.log('generations:', generations);
+```
+
+### Fetch
+
+```typescript
+const { models } = await everart.v1.models.fetch({ limit: 1 }); 
+if (!models.length) throw new Error('No models found');
+const generations = await everart.v1.generations.create(
+  models[0].id, 
+  `${models[0].name} test`,
+  'txt2img',
+  { 
+    imageCount: 1 
+  }
+);
+if (!generations.length) throw new Error('No generations found');
+const generation = await everart.v1.generations.fetch(generations[0].id);
+
+console.log('generation:', generation);
+```
+
+### Fetch With Polling
+
+```typescript
+const { models } = await everart.v1.models.fetch({ limit: 1 }); 
+if (!models.length) throw new Error('No models found');
+const generations = await everart.v1.generations.create(
+  models[0].id, 
+  `${models[0].name} test`,
+  'txt2img',
+  { 
+    imageCount: 1 
+  }
+);
+if (!generations.length) throw new Error('No generations found');
+const generation = await everart.v1.generations.fetchWithPolling(generations[0].id);
+
+console.log('generation:', generation);
+```
 
 ## Models (v1)
 
@@ -67,62 +124,9 @@ const model = await everart.v1.models.create(
 console.log('Model:', model);
 ```
 
-## Predictions (v1)
+## Deprecation Notice
 
-### Create
-
-```typescript
-const { models } = await everart.v1.models.fetch({ limit: 1 }); 
-if (!models.length) throw new Error('No models found');
-const predictions = await everart.v1.predictions.create(
-  models[0].id, 
-  `${models[0].name} test`, 
-  'txt2img',
-  { 
-    imageCount: 1 
-  }
-);
-
-console.log('Predictions:', predictions);
-```
-
-### Fetch
-
-```typescript
-const { models } = await everart.v1.models.fetch({ limit: 1 }); 
-if (!models.length) throw new Error('No models found');
-const predictions = await everart.v1.predictions.create(
-  models[0].id, 
-  `${models[0].name} test`,
-  'txt2img',
-  { 
-    imageCount: 1 
-  }
-);
-if (!predictions.length) throw new Error('No predictions found');
-const prediction = await everart.v1.predictions.fetch(predictions[0].id);
-
-console.log('Prediction:', prediction);
-```
-
-### Fetch With Polling
-
-```typescript
-const { models } = await everart.v1.models.fetch({ limit: 1 }); 
-if (!models.length) throw new Error('No models found');
-const predictions = await everart.v1.predictions.create(
-  models[0].id, 
-  `${models[0].name} test`,
-  'txt2img',
-  { 
-    imageCount: 1 
-  }
-);
-if (!predictions.length) throw new Error('No predictions found');
-const prediction = await everart.v1.predictions.fetchWithPolling(predictions[0].id);
-
-console.log('Prediction:', prediction);
-```
+The `predictions` API is deprecated and will be removed in a future version. Please use the `generations` API instead.
 
 ## Development and testing
 

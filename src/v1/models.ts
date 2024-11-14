@@ -24,7 +24,19 @@ type Model = {
   name: string;
   status: ModelStatus;
   subject: ModelSubject;
+  createdAt: Date;
+  updatedAt: Date;
+  estimatedCompletedAt?: Date;
 };
+
+function mapModel(model: any) {
+  return {
+    ...model,
+    createdAt: new Date(model.createdAt),
+    updatedAt: new Date(model.updatedAt),
+    estimatedCompletedAt: model.estimatedCompletedAt ? new Date(model.estimatedCompletedAt) : undefined
+  }
+}
 
 export type FetchManyResponse = { models: Model[]; hasMore: boolean };
 
@@ -77,7 +89,7 @@ export async function fetchMany(
     typeof response.data.has_more === 'boolean'
   ) {
     return {
-      models: response.data.models,
+      models: response.data.models.map(mapModel),
       hasMore: response.data.has_more,
     };
   }
@@ -110,7 +122,7 @@ export async function fetch(
   });
 
   if (response.status === 200 && response.data.model) {
-    return response.data.model;
+    return mapModel(response.data.model);
   }
 
   throw new EverArtError(
@@ -155,7 +167,7 @@ export async function create(
   );
 
   if (response.status === 200 && response.data.model) {
-    return response.data.model;
+    return mapModel(response.data.model);
   }
 
   throw new EverArtError(
