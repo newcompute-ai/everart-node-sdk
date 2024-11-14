@@ -30,7 +30,7 @@ export type FetchOptions = [id: string];
 
 /**
  * EverArt Fetch Prediction (v1/predictions/:id)
- * 
+ *
  * @deprecated Use generations instead. This will be removed in a future version.
  */
 export async function fetch(
@@ -59,7 +59,7 @@ export async function fetch(
 
 /**
  * EverArt Fetch Prediction w/ polling (v1/predictions/:id)
- * 
+ *
  * @deprecated Use generations instead. This will be removed in a future version.
  */
 export async function fetchWithPolling(
@@ -103,7 +103,7 @@ export type CreateResponse = Prediction[];
 
 /**
  * EverArt Create Predictions (v1/models/:id/predictions)
- * 
+ *
  * @deprecated Use generations instead. This will be removed in a future version.
  *
  * @param modelId - The model ID to use for the prediction

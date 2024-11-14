@@ -34,8 +34,10 @@ function mapModel(model: any) {
     ...model,
     createdAt: new Date(model.createdAt),
     updatedAt: new Date(model.updatedAt),
-    estimatedCompletedAt: model.estimatedCompletedAt ? new Date(model.estimatedCompletedAt) : undefined
-  }
+    estimatedCompletedAt: model.estimatedCompletedAt
+      ? new Date(model.estimatedCompletedAt)
+      : undefined,
+  };
 }
 
 export type FetchManyResponse = { models: Model[]; hasMore: boolean };

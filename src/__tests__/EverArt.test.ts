@@ -19,7 +19,7 @@ async function fetchReadyModel() {
 
   const { models } = await everart.v1.models.fetchMany({ limit: 40 });
 
-  const readyModels = models.filter(model => model.status === 'READY');
+  const readyModels = models.filter((model) => model.status === 'READY');
   const model = readyModels[0];
 
   if (!model) throw new Error('No ready models found');

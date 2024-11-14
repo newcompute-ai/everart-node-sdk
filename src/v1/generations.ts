@@ -30,8 +30,8 @@ function mapGeneration(generation: any) {
   return {
     ...generation,
     createdAt: new Date(generation.createdAt),
-    updatedAt: new Date(generation.updatedAt)
-  }
+    updatedAt: new Date(generation.updatedAt),
+  };
 }
 
 export type FetchResponse = Generation;
