@@ -88,6 +88,34 @@ if (!generations.length) throw new Error('No generations found');
 const generation = await everart.v1.generations.fetchWithPolling(generations[0].id);
 
 console.log('generation:', generation);
+
+```
+
+## Public Models
+
+EverArt provides access to several public models that you can use for generation. Here's a list of available public models:
+
+| Model ID | Name |
+|----------|------|
+| 5000 | FLUX1.1 [pro] |
+| 9000 | FLUX1.1 [pro] (ultra) |
+| 6000 | SD 3.5 Large |
+| 7000 | Recraft V3 - Realistic |
+| 8000 | Recraft V3 - Vector |
+
+To use a public model, you can specify its ID when creating a generation:
+
+```typescript
+const generation = await everart.v1.generations.create(
+  '5000',  // FLUX1.1 [pro] model ID
+  'A beautiful landscape',
+  'txt2img',
+  { 
+    imageCount: 1 
+  }
+);
+
+console.log('generation:', generation);
 ```
 
 ## Models (v1)
