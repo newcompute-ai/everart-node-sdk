@@ -98,6 +98,7 @@ export type V1CreateOptionalParams = {
   imageCount?: number;
   height?: number;
   width?: number;
+  webhookUrl?: string;
 };
 
 export type CreateOptions = [
@@ -129,6 +130,7 @@ export async function create(
   if (options?.height) body.height = options.height;
   if (options?.width) body.width = options.width;
   if (options?.imageCount) body.image_count = options.imageCount;
+  if (options?.webhookUrl) body.webhook_url = options.webhookUrl;
 
   const endpoint = Endpoint.CREATE.replace(':id', modelId);
 

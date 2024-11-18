@@ -136,10 +136,19 @@ export async function fetch(
 
 export type CreateResponse = Model;
 
-export type CreateOptions = [
+export type V1CreateRequiredParams = [
   name: string,
   subject: ModelSubject,
-  imageUrls: string[],
+  imageUrls: string[]
+];
+
+export type V1CreateOptionalParams = {
+  webhookUrl?: string;
+};
+
+export type CreateOptions = [
+  ...V1CreateRequiredParams,
+  options?: V1CreateOptionalParams,
 ];
 
 /**
@@ -149,13 +158,15 @@ export async function create(
   this: EverArt,
   ...args: CreateOptions
 ): Promise<CreateResponse> {
-  const [name, subject, imageUrls] = args;
+  const [name, subject, imageUrls, options] = args;
 
   const body: any = {
     name,
     subject,
     image_urls: imageUrls,
   };
+
+  if (options?.webhookUrl) body.webhook_url = options.webhookUrl;
 
   const endpoint = Endpoint.CREATE;
 

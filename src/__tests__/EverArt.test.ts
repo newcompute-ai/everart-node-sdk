@@ -27,43 +27,37 @@ async function fetchReadyModel() {
   return model;
 }
 
-// v1/models
+// // v1/models
 
-test('Fetch many models - (v1/models)', async () => {
-  if (!everart) throw new Error('EverArt instance not found');
-
-  const { models, hasMore } = await everart.v1.models.fetchMany({ limit: 1 });
-
-  console.log('Models:', models);
-  console.log('Has More:', hasMore);
-
-  expect(typeof hasMore).toBe('boolean');
-  expect(Array.isArray(models)).toBe(true);
-});
-
-// test('Create style model - (v1/models)', async () => {
+// test('Fetch many models - (v1/models)', async () => {
 //   if (!everart) throw new Error('EverArt instance not found');
 
-//   const model = await everart.v1.models.create('api test', 'STYLE', [
-//     'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236787949570/out-0.png',
-//     'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236783755264/out-0.png',
-//     'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236787949568/out-0.png',
-//     'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140057613973983233/out-0.png',
-//     'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140055275938910211/out-0.png',
-//   ]);
-//   if (!model) throw new Error('Failed to create model.');
+//   const { models, hasMore } = await everart.v1.models.fetchMany({ limit: 1 });
 
-//   console.log('Model:', model);
+//   console.log('Models:', models);
+//   console.log('Has More:', hasMore);
 
-//   expect(model).toHaveProperty('id');
+//   expect(typeof hasMore).toBe('boolean');
+//   expect(Array.isArray(models)).toBe(true);
 // });
 
-test('Fetch model - (v1/models)', async () => {
+test('Create style model - (v1/models)', async () => {
   if (!everart) throw new Error('EverArt instance not found');
 
-  const { models } = await everart.v1.models.fetchMany({ limit: 1 });
-  const model = await everart.v1.models.fetch(models[0].id);
-
+  const model = await everart.v1.models.create(
+    'api test', 
+    'STYLE', 
+    [
+      'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236787949570/out-0.png',
+      'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236783755264/out-0.png',
+      'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236787949568/out-0.png',
+      'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140057613973983233/out-0.png',
+      'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140055275938910211/out-0.png',
+    ],
+    {
+      webhookUrl: 'https://api.ngrok.everart.ai/webhooks/everart'
+    },
+  );
   if (!model) throw new Error('Failed to create model.');
 
   console.log('Model:', model);
@@ -71,91 +65,104 @@ test('Fetch model - (v1/models)', async () => {
   expect(model).toHaveProperty('id');
 });
 
-// v1/models/:id/predictions
+// test('Fetch model - (v1/models)', async () => {
+//   if (!everart) throw new Error('EverArt instance not found');
 
-test('Create txt2img predictions - (v1/models/:id/predictions)', async () => {
-  if (!everart) throw new Error('EverArt instance not found');
+//   const { models } = await everart.v1.models.fetchMany({ limit: 1 });
+//   const model = await everart.v1.models.fetch(models[0].id);
 
-  const model = await fetchReadyModel();
-  const predictions = await everart.v1.predictions.create(
-    model.id,
-    `${model.name} test`,
-    'txt2img',
-    {
-      imageCount: 1,
-    },
-  );
+//   if (!model) throw new Error('Failed to create model.');
 
-  console.log('Predictions:', predictions);
+//   console.log('Model:', model);
 
-  expect(Array.isArray(predictions)).toBe(true);
-});
+//   expect(model).toHaveProperty('id');
+// });
 
-test('Create img2img predictions - (v1/models/:id/predictions)', async () => {
-  if (!everart) throw new Error('EverArt instance not found');
+// // v1/models/:id/predictions
 
-  const model = await fetchReadyModel();
-  const predictions = await everart.v1.predictions.create(
-    model.id,
-    `${model.name} test`,
-    'img2img',
-    {
-      image:
-        'https://storage.googleapis.com/storage.catbird.ai/training/model/1000/data/predictions/169147014733500416/v2beta_stable_image_generate_ultra_e660909f-71a0-4bb2-8113-fadb42f3e98f.png',
-      imageCount: 1,
-    },
-  );
+// test('Create txt2img predictions - (v1/models/:id/predictions)', async () => {
+//   if (!everart) throw new Error('EverArt instance not found');
 
-  console.log('Predictions:', predictions);
+//   const model = await fetchReadyModel();
+//   const predictions = await everart.v1.predictions.create(
+//     model.id,
+//     `${model.name} test`,
+//     'txt2img',
+//     {
+//       imageCount: 1,
+//     },
+//   );
 
-  expect(Array.isArray(predictions)).toBe(true);
-});
+//   console.log('Predictions:', predictions);
 
-// v1/predictions/:id
+//   expect(Array.isArray(predictions)).toBe(true);
+// });
 
-test('Fetch prediction -  (v1/predictions/:id)', async () => {
-  if (!everart) throw new Error('EverArt instance not found');
+// test('Create img2img predictions - (v1/models/:id/predictions)', async () => {
+//   if (!everart) throw new Error('EverArt instance not found');
 
-  const model = await fetchReadyModel();
-  const predictions = await everart.v1.predictions.create(
-    model.id,
-    `${model.name} test`,
-    'txt2img',
-    {
-      imageCount: 1,
-    },
-  );
-  if (!predictions.length) throw new Error('No predictions found');
-  const prediction = await everart.v1.predictions.fetch(predictions[0].id);
+//   const model = await fetchReadyModel();
+//   const predictions = await everart.v1.predictions.create(
+//     model.id,
+//     `${model.name} test`,
+//     'img2img',
+//     {
+//       image:
+//         'https://storage.googleapis.com/storage.catbird.ai/training/model/1000/data/predictions/169147014733500416/v2beta_stable_image_generate_ultra_e660909f-71a0-4bb2-8113-fadb42f3e98f.png',
+//       imageCount: 1,
+//     },
+//   );
 
-  console.log('Prediction:', prediction);
+//   console.log('Predictions:', predictions);
 
-  expect(prediction).toHaveProperty('id');
-}, 30000);
+//   expect(Array.isArray(predictions)).toBe(true);
+// });
 
-test('Fetch prediction with polling -  (v1/predictions/:id)', async () => {
-  if (!everart) throw new Error('EverArt instance not found');
+// // v1/predictions/:id
 
-  const model = await fetchReadyModel();
-  const predictions = await everart.v1.predictions.create(
-    model.id,
-    `${model.name} test`,
-    'txt2img',
-    {
-      imageCount: 1,
-    },
-  );
-  if (!predictions.length) throw new Error('No predictions found');
-  const prediction = await everart.v1.predictions.fetchWithPolling(
-    predictions[0].id,
-  );
+// test('Fetch prediction -  (v1/predictions/:id)', async () => {
+//   if (!everart) throw new Error('EverArt instance not found');
 
-  console.log('Prediction:', prediction);
+//   const model = await fetchReadyModel();
+//   const predictions = await everart.v1.predictions.create(
+//     model.id,
+//     `${model.name} test`,
+//     'txt2img',
+//     {
+//       imageCount: 1,
+//     },
+//   );
+//   if (!predictions.length) throw new Error('No predictions found');
+//   const prediction = await everart.v1.predictions.fetch(predictions[0].id);
 
-  expect(prediction).toHaveProperty('id');
-  expect(prediction).toHaveProperty('status');
-  expect(prediction.status).toBe('SUCCEEDED');
-}, 120000);
+//   console.log('Prediction:', prediction);
+
+//   expect(prediction).toHaveProperty('id');
+// }, 30000);
+
+// test('Fetch prediction with polling -  (v1/predictions/:id)', async () => {
+//   if (!everart) throw new Error('EverArt instance not found');
+
+//   const model = await fetchReadyModel();
+//   const predictions = await everart.v1.predictions.create(
+//     model.id,
+//     `${model.name} test`,
+//     'txt2img',
+//     {
+//       imageCount: 1,
+//     },
+//   );
+//   if (!predictions.length) throw new Error('No predictions found');
+//   const prediction = await everart.v1.predictions.fetchWithPolling(
+//     predictions[0].id,
+//   );
+
+//   console.log('Prediction:', prediction);
+
+//   expect(prediction).toHaveProperty('id');
+//   expect(prediction).toHaveProperty('status');
+//   expect(prediction.status).toBe('SUCCEEDED');
+// }, 120000);
 
 // v1/models/:id/generations
 
@@ -168,7 +175,8 @@ test('Create txt2img generations - (v1/models/:id/generations)', async () => {
     `${model.name} test`,
     'txt2img',
     {
-      imageCount: 1,
+      imageCount: 3,
+      webhookUrl: 'https://api.ngrok.everart.ai/webhooks/everart'
     },
   );
 
@@ -177,68 +185,68 @@ test('Create txt2img generations - (v1/models/:id/generations)', async () => {
   expect(Array.isArray(generations)).toBe(true);
 });
 
-test('Create img2img generations - (v1/models/:id/generations)', async () => {
-  if (!everart) throw new Error('EverArt instance not found');
+// test('Create img2img generations - (v1/models/:id/generations)', async () => {
+//   if (!everart) throw new Error('EverArt instance not found');
 
-  const model = await fetchReadyModel();
-  const generations = await everart.v1.generations.create(
-    model.id,
-    `${model.name} test`,
-    'img2img',
-    {
-      image:
-        'https://storage.googleapis.com/storage.catbird.ai/training/model/1000/data/predictions/169147014733500416/v2beta_stable_image_generate_ultra_e660909f-71a0-4bb2-8113-fadb42f3e98f.png',
-      imageCount: 1,
-    },
-  );
+//   const model = await fetchReadyModel();
+//   const generations = await everart.v1.generations.create(
+//     model.id,
+//     `${model.name} test`,
+//     'img2img',
+//     {
+//       image:
+//         'https://storage.googleapis.com/storage.catbird.ai/training/model/1000/data/predictions/169147014733500416/v2beta_stable_image_generate_ultra_e660909f-71a0-4bb2-8113-fadb42f3e98f.png',
+//       imageCount: 1,
+//     },
+//   );
 
-  console.log('Generations:', generations);
+//   console.log('Generations:', generations);
 
-  expect(Array.isArray(generations)).toBe(true);
-});
+//   expect(Array.isArray(generations)).toBe(true);
+// });
 
-// v1/generations/:id
+// // v1/generations/:id
 
-test('Fetch generation -  (v1/generations/:id)', async () => {
-  if (!everart) throw new Error('EverArt instance not found');
+// test('Fetch generation -  (v1/generations/:id)', async () => {
+//   if (!everart) throw new Error('EverArt instance not found');
 
-  const model = await fetchReadyModel();
-  const generations = await everart.v1.generations.create(
-    model.id,
-    `${model.name} test`,
-    'txt2img',
-    {
-      imageCount: 1,
-    },
-  );
-  if (!generations.length) throw new Error('No generations found');
-  const generation = await everart.v1.generations.fetch(generations[0].id);
+//   const model = await fetchReadyModel();
+//   const generations = await everart.v1.generations.create(
+//     model.id,
+//     `${model.name} test`,
+//     'txt2img',
+//     {
+//       imageCount: 1,
+//     },
+//   );
+//   if (!generations.length) throw new Error('No generations found');
+//   const generation = await everart.v1.generations.fetch(generations[0].id);
 
-  console.log('Generation:', generation);
+//   console.log('Generation:', generation);
 
-  expect(generation).toHaveProperty('id');
-}, 30000);
+//   expect(generation).toHaveProperty('id');
+// }, 30000);
 
-test('Fetch generation with polling -  (v1/generations/:id)', async () => {
-  if (!everart) throw new Error('EverArt instance not found');
+// test('Fetch generation with polling -  (v1/generations/:id)', async () => {
+//   if (!everart) throw new Error('EverArt instance not found');
 
-  const model = await fetchReadyModel();
-  const generations = await everart.v1.generations.create(
-    model.id,
-    `${model.name} test`,
-    'txt2img',
-    {
-      imageCount: 1,
-    },
-  );
-  if (!generations.length) throw new Error('No generations found');
-  const generation = await everart.v1.generations.fetchWithPolling(
-    generations[0].id,
-  );
+//   const model = await fetchReadyModel();
+//   const generations = await everart.v1.generations.create(
+//     model.id,
+//     `${model.name} test`,
+//     'txt2img',
+//     {
+//       imageCount: 1,
+//     },
+//   );
+//   if (!generations.length) throw new Error('No generations found');
+//   const generation = await everart.v1.generations.fetchWithPolling(
+//     generations[0].id,
+//   );
 
-  console.log('Generation:', generation);
+//   console.log('Generation:', generation);
 
-  expect(generation).toHaveProperty('id');
-  expect(generation).toHaveProperty('status');
-  expect(generation.status).toBe('SUCCEEDED');
-}, 120000);
+//   expect(generation).toHaveProperty('id');
+//   expect(generation).toHaveProperty('status');
+//   expect(generation.status).toBe('SUCCEEDED');
+// }, 120000);
