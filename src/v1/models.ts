@@ -46,7 +46,7 @@ function mapModel(model: any) {
   delete mapped.estimated_completed_at;
   delete mapped.thumbnail_url;
 
-  return mapped
+  return mapped;
 }
 
 export type FetchManyResponse = { models: Model[]; hasMore: boolean };
@@ -148,7 +148,7 @@ export type CreateResponse = Model;
 export type V1CreateRequiredParams = [
   name: string,
   subject: ModelSubject,
-  imageUrls: string[]
+  imageUrls: string[],
 ];
 
 export type V1CreateOptionalParams = {

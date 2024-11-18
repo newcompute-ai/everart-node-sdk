@@ -45,8 +45,8 @@ test('Create style model - (v1/models)', async () => {
   if (!everart) throw new Error('EverArt instance not found');
 
   const model = await everart.v1.models.create(
-    'api test', 
-    'STYLE', 
+    'api test',
+    'STYLE',
     [
       'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236787949570/out-0.png',
       'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236783755264/out-0.png',
@@ -55,7 +55,7 @@ test('Create style model - (v1/models)', async () => {
       'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140055275938910211/out-0.png',
     ],
     {
-      webhookUrl: 'https://api.everart.ai/webhooks/everart'
+      webhookUrl: 'https://api.everart.ai/webhooks/everart',
     },
   );
   if (!model) throw new Error('Failed to create model.');
@@ -176,7 +176,7 @@ test('Create txt2img generations - (v1/models/:id/generations)', async () => {
     'txt2img',
     {
       imageCount: 3,
-      webhookUrl: 'https://api.everart.ai/webhooks/everart'
+      webhookUrl: 'https://api.everart.ai/webhooks/everart',
     },
   );
 

@@ -33,8 +33,8 @@ function mapGeneration(generation: any) {
     updatedAt: new Date(generation.updated_at),
   };
 
-   delete mapped.created_at;
-   delete mapped.updated_at;
+  delete mapped.created_at;
+  delete mapped.updated_at;
 
   return mapped;
 }
