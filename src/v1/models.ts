@@ -27,17 +27,26 @@ type Model = {
   createdAt: Date;
   updatedAt: Date;
   estimatedCompletedAt?: Date;
+  thumbnailUrl?: string;
 };
 
 function mapModel(model: any) {
-  return {
+  const mapped = {
     ...model,
-    createdAt: new Date(model.createdAt),
-    updatedAt: new Date(model.updatedAt),
-    estimatedCompletedAt: model.estimatedCompletedAt
-      ? new Date(model.estimatedCompletedAt)
+    createdAt: new Date(model.created_at),
+    updatedAt: new Date(model.updated_at),
+    estimatedCompletedAt: model.estimated_completed_at
+      ? new Date(model.estimated_completed_at)
       : undefined,
+    thumbnailUrl: model.thumbnail_url ? model.thumbnail_url : undefined,
   };
+
+  delete mapped.created_at;
+  delete mapped.updated_at;
+  delete mapped.estimated_completed_at;
+  delete mapped.thumbnail_url;
+
+  return mapped
 }
 
 export type FetchManyResponse = { models: Model[]; hasMore: boolean };

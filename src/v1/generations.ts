@@ -27,11 +27,16 @@ type Generation = {
 };
 
 function mapGeneration(generation: any) {
-  return {
+  const mapped = {
     ...generation,
-    createdAt: new Date(generation.createdAt),
-    updatedAt: new Date(generation.updatedAt),
+    createdAt: new Date(generation.created_at),
+    updatedAt: new Date(generation.updated_at),
   };
+
+   delete mapped.created_at;
+   delete mapped.updated_at;
+
+  return mapped;
 }
 
 export type FetchResponse = Generation;
