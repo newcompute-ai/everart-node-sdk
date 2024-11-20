@@ -137,7 +137,9 @@ export async function uploadFile(filePath: string, uploadUrl: string, contentTyp
       maxBodyLength: Infinity,
     });
   } catch (err) {
-    let status = 500, data = undefined;
+    let status = 500;
+    let data = undefined;
+    
     if (err instanceof AxiosError) {
       status = err.response?.status || 500;
       data = err.response?.data;

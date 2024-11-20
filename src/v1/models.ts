@@ -197,7 +197,7 @@ export async function create(
     .filter(i => i.type === 'file') as FileImageInput[])
     .map(i => {
       const name = i.path.split('/').pop() || 'image';
-      let contentType: UploadsRequestImage['content_type'] = Util.getContentType(name);
+      const contentType: Util.ContentType = Util.getContentType(name);
 
       return {
         path: i.path,
