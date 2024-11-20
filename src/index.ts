@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import * as V1Generations from './v1/generations';
+import * as V1Images from './v1/images';
 import * as V1Models from './v1/models';
 import * as V1Predictions from './v1/predictions';
 
@@ -32,6 +33,12 @@ class EverArt {
           ...args: V1Generations.FetchOptions
         ): Promise<V1Generations.FetchResponse> =>
           V1Generations.fetchWithPolling.bind(this)(...args),
+      },
+      images: {
+        uploads: (
+          ...args: V1Images.UploadsOptions
+        ): Promise<V1Images.UploadsResponse> =>
+          V1Images.uploads.bind(this)(...args),
       },
       models: {
         fetch: (

@@ -68,6 +68,9 @@ type GenerationType = 'txt2img' | 'img2img';
 - [Fetch](#fetch)
 - [Fetch w/ Polling](#fetch-with-polling)
 
+### Images (v1)
+- [Upload](#upload)
+
 ### Models (v1)
 - [Fetch](#fetch)
 - [Fetch Many](#fetch-many)
@@ -108,6 +111,32 @@ Fetch a generation and wait until it's complete.
 ```typescript
 const generation = await everart.v1.generations.fetchWithPolling('generation_id');
 ```
+
+## Images (v1)
+
+### Upload
+
+Get upload URLs for images.
+
+```typescript
+const uploads = await everart.v1.images.uploads([
+  {
+    filename: 'image1.jpg',
+    content_type: 'image/jpeg'
+  },
+  {
+    filename: 'image2.png',
+    content_type: 'image/png'
+  }
+]);
+```
+
+Supported content types:
+- image/jpeg
+- image/png 
+- image/webp
+- image/heic
+- image/heif
 
 ## Models (v1)
 
