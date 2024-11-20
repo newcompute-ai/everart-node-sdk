@@ -145,12 +145,27 @@ Supported content types:
 Create a new fine-tuned model.
 
 ```typescript
+// Using URLs
 const model = await everart.v1.models.create(
   'My Custom Model',  // Model name
   'OBJECT',          // Model subject type
   [
-    'https://example.com/image1.jpg',
-    'https://example.com/image2.jpg',
+    { type: 'url', value: 'https://example.com/image1.jpg' },
+    { type: 'url', value: 'https://example.com/image2.jpg' },
+    // ... more training images (minimum 5)
+  ],
+  {
+    webhookUrl: 'https://your-webhook.com'  // Optional: Webhook URL for training updates
+  }
+);
+
+// Using local files
+const model = await everart.v1.models.create(
+  'My Custom Model',  // Model name
+  'OBJECT',          // Model subject type
+  [
+    { type: 'file', path: '/path/to/image1.jpg' },
+    { type: 'file', path: '/path/to/image2.jpg' },
     // ... more training images (minimum 5)
   ],
   {
@@ -158,6 +173,20 @@ const model = await everart.v1.models.create(
   }
 );
 ```
+The images parameter accepts an array of image inputs that can be either URLs or local files:
+
+```typescript
+type URLImageInput = { type: 'url'; value: string };
+type FileImageInput = { type: 'file'; path: string };
+type ImageInput = URLImageInput | FileImageInput;
+```
+Supported file types:
+
+JPEG (.jpg, .jpeg)
+PNG (.png)
+WebP (.webp)
+HEIC (.heic)
+HEIF (.heif)
 
 ### Fetch
 
@@ -200,6 +229,7 @@ The SDK throws typed errors for different scenarios:
 type EverArtErrorName =
   | 'EverArtInvalidRequestError'    // 400: Invalid request parameters
   | 'EverArtUnauthorizedError'      // 401: Invalid API key
+  | 'EverArtForbiddenError'         // 403: General forbidden access
   | 'EverArtContentModerationError' // 403: Content violates policies
   | 'EverArtRecordNotFoundError'    // 404: Resource not found
   | 'EverArtUnknownError';          // Other errors

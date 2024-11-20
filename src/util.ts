@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import path from 'path';
 import os from 'os';
 import fs from 'fs-extra';
 import { v4 as uuidv4 } from 'uuid';
 
-const EVERART_BASE_URL = 'https://api.everart.ai';
+const EVERART_BASE_URL = 'https://api.ngrok.everart.ai';
 
 export enum APIVersion {
   V1 = 'v1',
@@ -73,6 +73,7 @@ export async function downloadImage(url: string) {
 export type EverArtErrorName =
   | 'EverArtInvalidRequestError'
   | 'EverArtUnauthorizedError'
+  | 'EverArtForbiddenError'
   | 'EverArtContentModerationError'
   | 'EverArtRecordNotFoundError'
   | 'EverArtUnknownError';
@@ -101,6 +102,9 @@ export class EverArtError extends Error {
         name = 'EverArtUnauthorizedError';
         break;
       case 403:
+        name = 'EverArtForbiddenError';
+        break;
+      case 451:  // Using 451 for content moderation (Legal reasons to block content)
         name = 'EverArtContentModerationError';
         break;
       case 404:
@@ -114,4 +118,57 @@ export class EverArtError extends Error {
 
 export async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Uploads a file to a pre-signed URL obtained from the images.uploads endpoint
+ * @param filePath Local path to the file to upload
+ * @param uploadUrl Pre-signed URL to upload to
+ * @param contentType MIME type of the file
+ */
+export async function uploadFile(filePath: string, uploadUrl: string, contentType: ContentType): Promise<void> {
+  const fileStream = fs.createReadStream(filePath);
+  
+  try {
+    await axios.put(uploadUrl, fileStream, {
+      headers: {
+        'Content-Type': contentType,
+      },
+      maxBodyLength: Infinity,
+    });
+  } catch (err) {
+    let status = 500, data = undefined;
+    if (err instanceof AxiosError) {
+      status = err.response?.status || 500;
+      data = err.response?.data;
+    }
+    throw new EverArtError(
+      status,
+      'Failed to upload file',
+      data
+    );
+  } finally {
+    fileStream.destroy();
+  }
+}
+
+export type ContentType = 'image/jpeg' | 'image/png' | 'image/webp' | 'image/heic' | 'image/heif';
+
+export function getContentType(filename: string): ContentType {
+  const ext = path.extname(filename).toLowerCase();
+  switch (ext) {
+    case '.jpg':
+    case '.jpeg':
+      return 'image/jpeg';
+    case '.png':
+      return 'image/png';
+    case '.webp':
+      return 'image/webp';
+    case '.heic':
+      return 'image/heic';
+    case '.heif':
+      return 'image/heif';
+    default:
+      throw new Error(`Unsupported file extension: ${ext}`);
+  }
 }

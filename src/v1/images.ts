@@ -11,11 +11,13 @@ export type ImageUpload = {
   upload_token: string;
   upload_url: string;
   file_url: string;
+  id: string;
 };
 
 export type UploadsRequestImage = {
   filename: string;
-  content_type: 'image/jpeg' | 'image/png' | 'image/webp' | 'image/heic' | 'image/heif';
+  content_type: Util.ContentType;
+  id?: string;
 };
 
 export type UploadsOptions = [images: UploadsRequestImage[]];
