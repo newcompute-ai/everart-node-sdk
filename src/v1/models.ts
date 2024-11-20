@@ -185,17 +185,18 @@ export async function create(
     throw new EverArtError(400, 'At least one image is required');
   }
 
-  const imageUrls: string[] = (images.filter(i => i.type === 'url') as URLImageInput[]).map(i => i.value);
+  const imageUrls: string[] = (
+    images.filter((i) => i.type === 'url') as URLImageInput[]
+  ).map((i) => i.value);
   const imageUploadTokens: string[] = [];
 
   const files: {
-    name: string,
-    path: string,
-    contentType: UploadsRequestImage['content_type'],
-    id: string
-  }[] = (images
-    .filter(i => i.type === 'file') as FileImageInput[])
-    .map(i => {
+    name: string;
+    path: string;
+    contentType: UploadsRequestImage['content_type'];
+    id: string;
+  }[] = (images.filter((i) => i.type === 'file') as FileImageInput[]).map(
+    (i) => {
       const name = i.path.split('/').pop() || 'image';
       const contentType: Util.ContentType = Util.getContentType(name);
 
@@ -203,41 +204,45 @@ export async function create(
         path: i.path,
         name,
         contentType,
-        id: uuidv4()
-      }
-    });
+        id: uuidv4(),
+      };
+    },
+  );
 
   if (files.length > 0) {
     try {
       const imageUploads = await this.v1.images.uploads(
-        files.map(file => ({
+        files.map((file) => ({
           filename: file.name,
           content_type: file.contentType,
-          id: file.id
-        }))
+          id: file.id,
+        })),
       );
 
-      await Promise.all(imageUploads.map(async (imageUpload) => {
-        const file = files.find(file => file.id === imageUpload.id);
-        if (!file) throw new Error('Could not find associated file for upload');
-        
-        try {
-          await Util.uploadFile(file.path, imageUpload.upload_url, file.contentType);
-          imageUploadTokens.push(imageUpload.upload_token);
-        } catch (error) {
-          throw new EverArtError(
-            500,
-            `Failed to upload file ${file.name}`,
-            error
-          );
-        }
-      }));
-    } catch (error) {
-      throw new EverArtError(
-        500,
-        'Failed during file upload process',
-        error
+      await Promise.all(
+        imageUploads.map(async (imageUpload) => {
+          const file = files.find((file) => file.id === imageUpload.id);
+          if (!file)
+            throw new Error('Could not find associated file for upload');
+
+          try {
+            await Util.uploadFile(
+              file.path,
+              imageUpload.upload_url,
+              file.contentType,
+            );
+            imageUploadTokens.push(imageUpload.upload_token);
+          } catch (error) {
+            throw new EverArtError(
+              500,
+              `Failed to upload file ${file.name}`,
+              error,
+            );
+          }
+        }),
       );
+    } catch (error) {
+      throw new EverArtError(500, 'Failed during file upload process', error);
     }
   }
 

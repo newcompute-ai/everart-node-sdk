@@ -37,11 +37,31 @@ test('Create style model with image urls - (v1/models)', async () => {
     'api test',
     'STYLE',
     [
-      { type: 'url', value: 'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236787949570/out-0.png' },
-      { type: 'url', value: 'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236783755264/out-0.png' },
-      { type: 'url', value: 'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236787949568/out-0.png' },
-      { type: 'url', value: 'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140057613973983233/out-0.png' },
-      { type: 'url', value: 'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140055275938910211/out-0.png' },
+      {
+        type: 'url',
+        value:
+          'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236787949570/out-0.png',
+      },
+      {
+        type: 'url',
+        value:
+          'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236783755264/out-0.png',
+      },
+      {
+        type: 'url',
+        value:
+          'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140059236787949568/out-0.png',
+      },
+      {
+        type: 'url',
+        value:
+          'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140057613973983233/out-0.png',
+      },
+      {
+        type: 'url',
+        value:
+          'https://storage.googleapis.com/storage.catbird.ai/training/model/129541926348263424/data/predictions/140055275938910211/out-0.png',
+      },
     ],
     {
       webhookUrl: 'https://api.everart.ai/webhooks/everart',
@@ -56,18 +76,21 @@ test('Create style model with image urls - (v1/models)', async () => {
 
 test('Create style model with image files - (v1/models)', async () => {
   if (!everart) throw new Error('EverArt instance not found');
-  
+
   const testDataDir = path.join(__dirname, '../../test_data');
   const files = await fs.readdir(testDataDir);
-  const imageFiles = files.filter(file => 
-    /\.(jpg|jpeg|png|webp|heic|heif)$/i.test(file)
+  const imageFiles = files.filter((file) =>
+    /\.(jpg|jpeg|png|webp|heic|heif)$/i.test(file),
   );
   console.log(imageFiles);
 
   const model = await everart.v1.models.create(
     'api test',
     'STYLE',
-    imageFiles.map(file => ({ type: 'file', path: path.join(testDataDir, file) })),
+    imageFiles.map((file) => ({
+      type: 'file',
+      path: path.join(testDataDir, file),
+    })),
     {
       webhookUrl: 'https://api.everart.ai/webhooks/everart',
     },

@@ -4,7 +4,7 @@ import * as Util from '../util';
 import EverArt from '..';
 
 enum Endpoint {
-  UPLOADS = 'images/uploads'
+  UPLOADS = 'images/uploads',
 }
 
 export type ImageUpload = {
@@ -39,7 +39,7 @@ export async function uploads(
     {
       headers: this.defaultHeaders,
       validateStatus: undefined,
-    }
+    },
   );
 
   if (response.status === 200 && Array.isArray(response.data.image_uploads)) {
@@ -49,6 +49,6 @@ export async function uploads(
   throw new EverArtError(
     response.status,
     'Failed to get upload URLs',
-    response.data
+    response.data,
   );
 }

@@ -104,7 +104,7 @@ export class EverArtError extends Error {
       case 403:
         name = 'EverArtForbiddenError';
         break;
-      case 451:  // Using 451 for content moderation (Legal reasons to block content)
+      case 451: // Using 451 for content moderation (Legal reasons to block content)
         name = 'EverArtContentModerationError';
         break;
       case 404:
@@ -126,9 +126,13 @@ export async function sleep(ms: number) {
  * @param uploadUrl Pre-signed URL to upload to
  * @param contentType MIME type of the file
  */
-export async function uploadFile(filePath: string, uploadUrl: string, contentType: ContentType): Promise<void> {
+export async function uploadFile(
+  filePath: string,
+  uploadUrl: string,
+  contentType: ContentType,
+): Promise<void> {
   const fileStream = fs.createReadStream(filePath);
-  
+
   try {
     await axios.put(uploadUrl, fileStream, {
       headers: {
@@ -139,22 +143,23 @@ export async function uploadFile(filePath: string, uploadUrl: string, contentTyp
   } catch (err) {
     let status = 500;
     let data = undefined;
-    
+
     if (err instanceof AxiosError) {
       status = err.response?.status || 500;
       data = err.response?.data;
     }
-    throw new EverArtError(
-      status,
-      'Failed to upload file',
-      data
-    );
+    throw new EverArtError(status, 'Failed to upload file', data);
   } finally {
     fileStream.destroy();
   }
 }
 
-export type ContentType = 'image/jpeg' | 'image/png' | 'image/webp' | 'image/heic' | 'image/heif';
+export type ContentType =
+  | 'image/jpeg'
+  | 'image/png'
+  | 'image/webp'
+  | 'image/heic'
+  | 'image/heif';
 
 export function getContentType(filename: string): ContentType {
   const ext = path.extname(filename).toLowerCase();
